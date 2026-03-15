@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刘雨 · Rooney Liu — Game Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg: #0d0d0b;
+  --bg2: #141410;
+  --bg3: #1c1c16;
+  --ink: #f0ede4;
+  --ink2: #b8b4a8;
+  --ink3: #787468;
+  --gold: #c9a84c;
+  --gold2: #e8cc80;
+  --red: #c04040;
+  --green: #4a8c5c;
+  --rule: #2a2a22;
+  --rule2: #383830;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif SC', serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 48px;
+  background: linear-gradient(to bottom, rgba(13,13,11,.95) 0%, rgba(13,13,11,0) 100%);
+  transition: background .3s;
+}
+nav.scrolled { background: rgba(13,13,11,.97); border-bottom: 1px solid var(--rule); }
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; letter-spacing: .04em;
+  color: var(--gold);
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink2); text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 120px 48px 80px;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(201,168,76,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(74,140,92,.04) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: .04;
+  background-image:
+    linear-gradient(var(--rule2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule2) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-content { position: relative; max-width: 900px; width: 100%; }
+.hero-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+  opacity: 0; animation: fadeUp .8s .2s forwards;
+}
+.hero-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 700; line-height: .95;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  opacity: 0; animation: fadeUp .9s .35s forwards;
+}
+.hero-name em {
+  font-style: italic; color: var(--gold);
+  display: block; font-size: .72em;
+}
+.hero-tagline {
+  margin-top: 28px;
+  font-size: 1.05rem; color: var(--ink2); line-height: 1.75;
+  max-width: 560px;
+  opacity: 0; animation: fadeUp .9s .55s forwards;
+}
+.hero-tagline strong { color: var(--ink); }
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 48px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp .9s .72s forwards;
+}
+.stat-item { }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink3); margin-top: 4px;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 48px;
+  font-family: 'DM Mono', monospace;
+  font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold);
+  padding: 12px 24px; text-decoration: none;
+  transition: background .2s, color .2s;
+  opacity: 0; animation: fadeUp .9s .88s forwards;
+}
+.hero-cta:hover { background: var(--gold); color: var(--bg); }
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--ink3);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: bounce 2s infinite;
+}
+.scroll-line { width: 1px; height: 32px; background: var(--rule2); }
+
+/* ── LANG BADGES ── */
+.lang-row {
+  display: flex; gap: 8px; margin-top: 28px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp .9s .65s forwards;
+}
+.lbadge {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  letter-spacing: .1em; padding: 4px 10px;
+  border: 1px solid var(--rule2); color: var(--ink3);
+}
+.lbadge.a { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,.06); }
+.lbadge.b { border-color: var(--green); color: #6ab87c; background: rgba(74,140,92,.06); }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 100px 48px;
+  max-width: 1100px; margin: 0 auto;
+}
+.section-header {
+  display: flex; align-items: baseline; gap: 16px;
+  margin-bottom: 56px;
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem; color: var(--gold); letter-spacing: .2em;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; color: var(--ink);
+}
+.section-line {
+  flex: 1; height: 1px; background: var(--rule); margin-bottom: 4px;
+}
+
+/* ── ABOUT ── */
+.about-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0 48px; }
+.about-divider { background: var(--rule); }
+.about-text { font-size: .95rem; color: var(--ink2); line-height: 1.9; }
+.about-text p { margin-bottom: 16px; }
+.about-text strong { color: var(--ink); }
+.about-text .highlight {
+  color: var(--gold);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+.about-meta { padding-left: 48px; }
+.meta-block { margin-bottom: 32px; }
+.meta-label {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 8px;
+}
+.meta-val { font-size: .9rem; color: var(--ink); }
+.meta-val a { color: var(--gold); text-decoration: none; }
+
+/* ── SKILLS ── */
+.skills-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.skill-card {
+  background: var(--bg2);
+  padding: 28px 24px;
+  transition: background .2s;
+  position: relative; overflow: hidden;
+}
+.skill-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s;
+}
+.skill-card:hover { background: var(--bg3); }
+.skill-card:hover::before { transform: scaleX(1); }
+.skill-icon {
+  font-size: 1.4rem; margin-bottom: 12px; display: block;
+}
+.skill-name {
+  font-size: .9rem; font-weight: 600; color: var(--ink);
+  margin-bottom: 8px;
+}
+.skill-desc { font-size: .78rem; color: var(--ink3); line-height: 1.65; }
+.skill-num {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem; color: var(--gold);
+  margin-top: 10px; display: block;
+}
+
+/* ── TAGS ── */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 40px; }
+.tag {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  letter-spacing: .06em; padding: 4px 10px;
+  border: 1px solid var(--rule2); color: var(--ink3);
+  transition: border-color .2s, color .2s;
+}
+.tag:hover { border-color: var(--gold); color: var(--gold); }
+.tag.g { border-color: rgba(201,168,76,.4); color: var(--gold2); }
+.tag.gr { border-color: rgba(74,140,92,.4); color: #6ab87c; }
+
+/* ── EXPERIENCE ── */
+.exp-list { display: flex; flex-direction: column; gap: 0; }
+.exp-item {
+  display: grid; grid-template-columns: 200px 1fr;
+  gap: 0 48px;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.exp-item:first-child { padding-top: 0; }
+.exp-left { position: relative; }
+.exp-date {
+  font-family: 'DM Mono', monospace; font-size: .68rem;
+  color: var(--gold); letter-spacing: .1em;
+  position: sticky; top: 100px;
+}
+.exp-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); margin-top: 12px;
+}
+.exp-co {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 700; color: var(--ink);
+  margin-bottom: 4px; line-height: 1.3;
+}
+.exp-co span {
+  display: block; font-family: 'DM Mono', monospace;
+  font-size: .62rem; color: var(--ink3); font-weight: 400;
+  letter-spacing: .08em; margin-top: 3px;
+  font-style: normal;
+}
+.exp-role {
+  font-size: .78rem; color: var(--green);
+  margin-bottom: 6px; letter-spacing: .04em;
+}
+.exp-games {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  color: var(--ink3); margin-bottom: 18px; line-height: 1.7;
+}
+.exp-ul { list-style: none; padding: 0; }
+.exp-ul li {
+  font-size: .85rem; color: var(--ink2); line-height: 1.75;
+  margin-bottom: 10px; padding-left: 16px; position: relative;
+  text-align: justify;
+}
+.exp-ul li::before {
+  content: '—';
+  position: absolute; left: 0;
+  color: var(--gold); font-size: .75rem;
+}
+.exp-ul li strong { color: var(--ink); }
+.exp-chip {
+  display: inline-block;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.25);
+  color: var(--gold2);
+  font-family: 'DM Mono', monospace; font-size: .65em;
+  padding: 1px 6px; border-radius: 2px;
+  vertical-align: middle; margin: 0 1px;
+}
+
+/* ── LANGUAGES ── */
+.lang-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+.lang-card {
+  border: 1px solid var(--rule);
+  padding: 24px 20px;
+  background: var(--bg2);
+  position: relative; overflow: hidden;
+}
+.lang-card::after {
+  content: attr(data-lang);
+  position: absolute; right: -8px; top: -8px;
+  font-size: 3.5rem; opacity: .04; font-family: 'Playfair Display', serif;
+  font-weight: 700; pointer-events: none;
+}
+.lang-name { font-size: .95rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.lang-level { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--gold); letter-spacing: .1em; }
+.lang-desc { font-size: .75rem; color: var(--ink3); margin-top: 6px; line-height: 1.5; }
+.lang-bar { height: 2px; background: var(--rule); margin-top: 16px; }
+.lang-fill { height: 100%; background: linear-gradient(to right, var(--gold), var(--gold2)); }
+
+/* ── EDU ── */
+.edu-card {
+  border: 1px solid var(--rule);
+  padding: 36px 32px;
+  background: var(--bg2);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.edu-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--ink); }
+.edu-dept { font-size: .82rem; color: var(--ink3); margin-top: 6px; }
+.edu-gpa {
+  font-family: 'DM Mono', monospace; font-size: .68rem;
+  color: var(--gold); margin-top: 10px; letter-spacing: .1em;
+}
+.edu-date { font-family: 'DM Mono', monospace; font-size: .7rem; color: var(--ink3); text-align: right; }
+
+/* ── CONTACT FOOTER ── */
+.contact-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--rule);
+  padding: 80px 48px;
+  text-align: center;
+}
+.contact-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem; font-style: italic; color: var(--gold);
+  margin-bottom: 16px;
+}
+.contact-sub { font-size: .9rem; color: var(--ink3); margin-bottom: 40px; }
+.contact-links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.contact-link {
+  font-family: 'DM Mono', monospace; font-size: .72rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink2); text-decoration: none;
+  border-bottom: 1px solid var(--rule2); padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.contact-link:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ── STATUS ── */
+.status-bar {
+  max-width: 1100px; margin: 0 auto 0;
+  padding: 0 48px 100px;
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.status-item {
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  letter-spacing: .1em; color: var(--ink3);
+  padding: 6px 14px; border: 1px solid var(--rule2);
+}
+.status-item.active { border-color: var(--green); color: #6ab87c; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .7s, transform .7s;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── DIVIDER ── */
+.full-rule { border: none; border-top: 1px solid var(--rule); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-stats { gap: 24px; }
+  .section { padding: 60px 24px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-divider { display: none; }
+  .about-meta { padding-left: 0; margin-top: 40px; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .exp-item { grid-template-columns: 1fr; gap: 16px; }
+  .lang-grid { grid-template-columns: 1fr 1fr; }
+  .edu-card { flex-direction: column; gap: 12px; }
+  .contact-section { padding: 60px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">刘雨 · Rooney</div>
+  <ul class="nav-links">
+    <li><a href="#about">简介</a></li>
+    <li><a href="#skills">能力</a></li>
+    <li><a href="#experience">经历</a></li>
+    <li><a href="#languages">语言</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-label">Game Marketing · KOL Strategy · Localization</div>
+    <h1 class="hero-name">
+      刘雨
+      <em>Rooney Liu</em>
+    </h1>
+    <p class="hero-tagline">
+      专注<strong>港台及东南亚市场</strong>的游戏营销人，擅长 KOL/KOC 整合营销、社媒运营与跨文化本地化。
+      现居日本，寻求在日本市场发挥中文内容策略优势。
+    </p>
+    <div class="lang-row">
+      <span class="lbadge a">中文母语</span>
+      <span class="lbadge a">日語 N2</span>
+      <span class="lbadge b">English CET-6</span>
+      <span class="lbadge">在日留学中</span>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">6</div>
+        <div class="stat-label">年从业经验</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">KOL/KOC 管理</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">海外市场覆盖</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3万+</div>
+        <div class="stat-label">社群用户运营</div>
+      </div>
+    </div>
+    <a href="#contact" class="hero-cta">联系我 →</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section reveal" id="about">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">关于我</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>拥有 <strong>6年游戏行业市场营销经验</strong>，专注港台及东南亚海外市场。曾任职于<strong>港交所上市游戏发行商玩友时代（06820.HK）</strong>及游戏开发公司，主导多款产品在台湾、香港、新马三个市场的整合营销推广。</p>
+      <p>从 KOL/KOC 达人网络的从零搭建，到大型线下发布会的现场统筹；从竞品调研报告的产出，到品宣物料的全件审核——我习惯于<span class="highlight">全案独立主导，以数据闭环驱动决策</span>。</p>
+      <p>现定居日本，日语 JLPT N2，正在持续精进。深度理解中国用户内容消费习惯与港台社媒生态，希望在日本市场发挥中文内容策略的优势。</p>
+    </div>
+    <div class="about-divider"></div>
+    <div class="about-meta">
+      <div class="meta-block">
+        <div class="meta-label">现居地</div>
+        <div class="meta-val">日本 · 东京</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">在留资格</div>
+        <div class="meta-val">留学签证 · 赤门会日本語学校在读</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">联系方式</div>
+        <div class="meta-val">
+          070-6518-0993<br>
+          <a href="mailto:1562188489@qq.com">1562188489@qq.com</a>
+        </div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">擅长市场</div>
+        <div class="meta-val">台湾 · 香港 · 新加坡 · 马来西亚</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="full-rule">
+
+<!-- SKILLS -->
+<section class="section reveal" id="skills">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">核心能力</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <span class="skill-icon">📊</span>
+      <div class="skill-name">KOL / KOC 营销</div>
+      <div class="skill-desc">筛选标准制定、Brief制作、内容质量把控、传播数据追踪，全流程独立操盘</div>
+      <span class="skill-num">50+ 达人管理经验</span>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">💬</span>
+      <div class="skill-name">社群运营</div>
+      <div class="skill-desc">官方社群内容排期管理、用户互动、粉丝留存，多平台账号矩阵运营</div>
+      <span class="skill-num">3万+ 社群用户</span>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🎪</span>
+      <div class="skill-name">活动策划执行</div>
+      <div class="skill-desc">发布会、粉丝见面会、行业展会全流程主导，含嘉宾接待、现场管理</div>
+      <span class="skill-num">年均 3场+ 大型活动</span>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🌏</span>
+      <div class="skill-name">港台市场经验</div>
+      <div class="skill-desc">深度理解台湾、香港用户特性与文化，繁体中文内容策略制定与执行</div>
+      <span class="skill-num">台湾 · 香港 · 新马</span>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">✍️</span>
+      <div class="skill-name">本地化 / 翻译</div>
+      <div class="skill-desc">日→中（繁简）广告文案、UI文本、品宣素材文化适配与卡尔替换</div>
+      <span class="skill-num">日中双语对应</span>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">📈</span>
+      <div class="skill-name">数据分析与汇报</div>
+      <div class="skill-desc">月度效果报告产出，媒介投放、社群、KOL 多维度数据整合，直接汇报至 CEO</div>
+      <span class="skill-num">5+ 渠道数据整合</span>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag g">中文母语（繁简体）</span>
+    <span class="tag g">日語 JLPT N2</span>
+    <span class="tag g">英語 CET-6</span>
+    <span class="tag gr">KOL / KOC Marketing</span>
+    <span class="tag gr">社群运营</span>
+    <span class="tag gr">活动策划执行</span>
+    <span class="tag">港台及东南亚市场</span>
+    <span class="tag">品宣物料审核</span>
+    <span class="tag">日中本地化</span>
+    <span class="tag">效果数据分析</span>
+    <span class="tag">跨部门协调</span>
+    <span class="tag">竞品调研</span>
+  </div>
+</section>
+
+<hr class="full-rule">
+
+<!-- EXPERIENCE -->
+<section class="section reveal" id="experience">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">工作经历</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div class="exp-left">
+        <div class="exp-date">2022.07<br>—<br>2024.06</div>
+        <div class="exp-dot"></div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-co">
+          上海云蟾数码科技有限公司
+          <span>游戏开发 · 发行</span>
+        </div>
+        <div class="exp-role">市场经理</div>
+        <div class="exp-games">异星前哨（科幻RTS）· 铁甲雄兵（历史动作）· 蜀门手游（MMO）</div>
+        <ul class="exp-ul">
+          <li>从0到1搭建市场团队，统筹 <span class="exp-chip">3款产品线</span> 营销推广全案，制定并执行品宣流程，管理营销日历，确保各节点物料准时交付</li>
+          <li>构建 KOC 矩阵（<span class="exp-chip">30+ 名创作者</span>），制定筛选标准，主导 Brief 制作、内容质量把控及效果报告产出</li>
+          <li>主导官方社群与 SNS 账号运营，定期发布内容并进行用户互动，沉淀核心玩家社群</li>
+          <li>全程审核品宣物料（通用素材、渠道素材、视频脚本），与美宣部门紧密配合，维护品牌视觉与文案一致性</li>
+          <li>定期汇总 <span class="exp-chip">5+ 渠道</span> 媒介投放与社群运营数据，产出含优化建议的月度效果报告，直接汇报至发行总监 / CEO</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-left">
+        <div class="exp-date">2019.08<br>—<br>2022.06</div>
+        <div class="exp-dot"></div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-co">
+          苏州玩友时代科技股份有限公司
+          <span>港交所上市 · 06820.HK</span>
+        </div>
+        <div class="exp-role">市场经理 — 港台及东南亚</div>
+        <div class="exp-games">浮生为卿歌（MMO）· 妖怪餐厅（模拟经营）· 宫廷计（RPG）· 姬械联盟（卡牌）</div>
+        <ul class="exp-ul">
+          <li>负责 <span class="exp-chip">台湾 / 香港 / 新马</span> <span class="exp-chip">3个市场</span> 的整合营销推广，以繁体中文为主要工作语言与现地合作方开展日常联络、活动协调及合同谈判</li>
+          <li>构建并管理港台及东南亚 <span class="exp-chip">KOL/KOC 资源库（50+ 名）</span>；<strong>《浮生为卿歌》台服上线首周 App Store 免费榜进入 Top 10（女性向）</strong></li>
+          <li>搭建并运营 <span class="exp-chip">3万+ 用户</span> 官方社群，制定内容排期，定期发布运营内容，沉淀核心用户群体</li>
+          <li>主导策划并落地执行 <span class="exp-chip">年均 3场+</span> 大型线下活动（发布会、粉丝见面会、行业展会），全程负责会场统筹、嘉宾接待与现场管理</li>
+          <li>维护多类型外部资源合作关系，拓展并管理 <span class="exp-chip">20+ 家</span> 跨境合作伙伴（PR媒体、KOL、线下渠道、三方支付）</li>
+          <li>定期输出竞品调研报告，为 <span class="exp-chip">4款</span> 产品线的发行策略提供数据支撑</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-left">
+        <div class="exp-date">2018.05<br>—<br>2019.04</div>
+        <div class="exp-dot"></div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-co">
+          苏州爱洛克信息技术有限公司
+          <span>游戏公司</span>
+        </div>
+        <div class="exp-role">市场营销策划</div>
+        <ul class="exp-ul">
+          <li>负责游戏各阶段推广素材策划与制作进度管理（商店页面、新闻 PR、社媒视频、海报）</li>
+          <li>策划并落地执行大型线下粉丝活动，负责会场统筹、到场用户管理及现场流程把控；同步拓展维系当地媒介资源，通过资源置换获取曝光</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="full-rule">
+
+<!-- LANGUAGES -->
+<section class="section reveal" id="languages">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">语言能力</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="lang-grid">
+    <div class="lang-card" data-lang="中">
+      <div class="lang-name">中文（繁 / 简体）</div>
+      <div class="lang-level">母语</div>
+      <div class="lang-desc">繁简体书面均流畅，可撰写品宣文案及合同文件</div>
+      <div class="lang-bar"><div class="lang-fill" style="width:100%"></div></div>
+    </div>
+    <div class="lang-card" data-lang="日">
+      <div class="lang-name">日本語</div>
+      <div class="lang-level">JLPT N2 · 持续提升中</div>
+      <div class="lang-desc">可进行商务文书处理，日常工作沟通无障碍</div>
+      <div class="lang-bar"><div class="lang-fill" style="width:62%"></div></div>
+    </div>
+    <div class="lang-card" data-lang="En">
+      <div class="lang-name">English</div>
+      <div class="lang-level">CET-6 · 实务水平</div>
+      <div class="lang-desc">可作为工作语言进行邮件、文档及会议沟通</div>
+      <div class="lang-bar"><div class="lang-fill" style="width:78%"></div></div>
+    </div>
+    <div class="lang-card" data-lang="粤">
+      <div class="lang-name">粤语</div>
+      <div class="lang-level">业务理解水平</div>
+      <div class="lang-desc">可理解港方合作伙伴日常沟通，基本调整协调</div>
+      <div class="lang-bar"><div class="lang-fill" style="width:45%"></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="full-rule">
+
+<!-- EDU + STATUS -->
+<section class="section reveal">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">教育 · 现状</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-card" style="margin-bottom:16px;">
+    <div>
+      <div class="edu-name">苏州科技大学</div>
+      <div class="edu-dept">人文学院 · 汉语言文学专业 · 本科</div>
+      <div class="edu-gpa">GPA 3.4 / 4.0 · 英语 CET-6</div>
+    </div>
+    <div class="edu-date">2013.09<br>—<br>2017.07</div>
+  </div>
+  <div class="edu-card">
+    <div>
+      <div class="edu-name">赤門会日本語学校</div>
+      <div class="edu-dept">在読中 · 日語能力持続向上中</div>
+      <div class="edu-gpa">在留資格：留学ビザ</div>
+    </div>
+    <div class="edu-date">現在</div>
+  </div>
+  <div class="status-bar" style="padding: 16px 0 0; max-width: 100%;">
+    <div class="status-item active">● 求职中 · Open to Work</div>
+    <div class="status-item">📍 东京 Tokyo</div>
+    <div class="status-item">🎮 游戏 / 内容 / 本地化</div>
+    <div class="status-item">🌐 中文内容策略</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-section" id="contact">
+  <div class="contact-title">一起合作？</div>
+  <div class="contact-sub">欢迎通过以下方式联系我</div>
+  <div class="contact-links">
+    <a class="contact-link" href="tel:070-6518-0993">📞 070-6518-0993</a>
+    <a class="contact-link" href="mailto:1562188489@qq.com">✉ 1562188489@qq.com</a>
+  </div>
+  <div style="margin-top:48px; font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.12em; color:var(--ink3);">
+    刘雨 · Rooney Liu · Game Marketing
+  </div>
+</div>
+
+<script>
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+reveals.forEach(el => io.observe(el));
+
+// Smooth nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))
+      ?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
